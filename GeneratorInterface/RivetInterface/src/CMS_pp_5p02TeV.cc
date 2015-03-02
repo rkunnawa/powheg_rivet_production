@@ -33,14 +33,13 @@ namespace Rivet {
 
       // Initialize the projectors:
       addProjection(FastJets(fs, FastJets::ANTIKT, 0.3),"Jets");
-
   
       // Book histograms:
-      _hist_sigma.addHistogram(0.0, 0.5, bookHistogram1D(1, 1, 1));
-      _hist_sigma.addHistogram(0.5, 1.0, bookHistogram1D(2, 1, 1));
-      _hist_sigma.addHistogram(1.0, 1.5, bookHistogram1D(3, 1, 1));
-      _hist_sigma.addHistogram(1.5, 2.0, bookHistogram1D(4, 1, 1));
-      _hist_sigma.addHistogram(2.0, 2.5, bookHistogram1D(5, 1, 1));
+      _hist_sigma.addHistogram(20.0, 550.0, bookHistogram1D(1, 1, 1));
+      //_hist_sigma.addHistogram(0.5, 1.0, bookHistogram1D(2, 1, 1));
+      //_hist_sigma.addHistogram(1.0, 1.5, bookHistogram1D(3, 1, 1));
+      //_hist_sigma.addHistogram(1.5, 2.0, bookHistogram1D(4, 1, 1));
+      //_hist_sigma.addHistogram(2.0, 2.5, bookHistogram1D(5, 1, 1));
 
     }
 
@@ -49,8 +48,9 @@ namespace Rivet {
 
       const double weight = event.weight();      
       const FastJets &fj = applyProjection<FastJets>(event,"Jets");      
-      const Jets& jets = fj.jetsByPt(15*GeV, -4.7, 4.7, RAPIDITY);
+      const Jets& jets = fj.jetsByPt(15*GeV, -2.0, 2.0, RAPIDITY);
 
+#if 0
       //dijet system
       if(jets.size() > 2){
         float jet1pT = jets[0].momentum().pT()/GeV;
@@ -72,7 +72,16 @@ namespace Rivet {
 	  _hist_sigma.fill(ymax,invMass,weight);	
 	}
       }
+#endif
 
+      for(unsigned int a = 0;a<jets.size();a++){
+
+	float jetpT= jets[a].momentum().pT()/GeV;
+
+	_hist_sigma.fill(a,jetpT,weight);
+
+      }
+      
     }
   
 

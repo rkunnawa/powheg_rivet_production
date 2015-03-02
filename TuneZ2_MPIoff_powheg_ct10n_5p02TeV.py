@@ -15,7 +15,7 @@ process = cms.Process('GEN')
 options = VarParsing.VarParsing ('standard')
 
 options.output = 'Powheg_5TeV_Pythia_TuneZ2_GEN_LHE_bornkTsupp250_ktmin100.root'
-options.maxEvents = 50000
+options.maxEvents = 5000
 
 options.register('processType',
                  "NSD",
