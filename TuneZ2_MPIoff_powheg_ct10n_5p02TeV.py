@@ -15,7 +15,7 @@ process = cms.Process('GEN')
 options = VarParsing.VarParsing ('standard')
 
 options.output = 'Powheg_5TeV_Pythia_TuneZ2_GEN_LHE_bornkTsupp250_ktmin100.root'
-options.maxEvents = 5
+options.maxEvents = 50000
 
 options.register('processType',
                  "NSD",
@@ -30,7 +30,7 @@ options.register('sqrtS',
                  "Center-of-mass energy")
 
 options.register('sigma',
-                 10.651,
+                 2662.9437,
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.float,
                  "Cross section value from powheg in Nano Barns")
@@ -112,6 +112,7 @@ process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
 # Other statements
 
 process.GlobalTag.globaltag = 'STARTHI53_V27::All'
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.generator = cms.EDFilter("Pythia6HadronizerFilter",
                                  pythiaPylistVerbosity = cms.untracked.int32(1),
@@ -171,7 +172,7 @@ def customise(process):
         process.load('GeneratorInterface.RivetInterface.rivetAnalyzer_cfi')
         process.rivetAnalyzer.AnalysisNames = cms.vstring('CMS_pp_5p02TeV') 	
 	process.rivetAnalyzer.CrossSection = cms.double(options.sigma)		
-	process.rivetAnalyzer.OutputFile = cms.string(options.output)
+	process.rivetAnalyzer.OutputFile = cms.string('CMS_pp_5p02TeV_out.aida')
         process.generation_step+=process.rivetAnalyzer
         process.schedule.remove(process.RAWSIMoutput_step)
         return(process)

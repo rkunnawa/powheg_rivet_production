@@ -32,7 +32,7 @@ namespace Rivet {
       addProjection(fs, "FS"); 
 
       // Initialize the projectors:
-      addProjection(FastJets(fs, FastJets::ANTIKT, 0.7),"Jets");
+      addProjection(FastJets(fs, FastJets::ANTIKT, 0.3),"Jets");
 
   
       // Book histograms:
