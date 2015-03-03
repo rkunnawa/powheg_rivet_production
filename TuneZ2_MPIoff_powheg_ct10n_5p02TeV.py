@@ -15,7 +15,7 @@ process = cms.Process('GEN')
 options = VarParsing.VarParsing ('standard')
 
 options.output = 'Powheg_5TeV_Pythia_TuneZ2_GEN_LHE_bornkTsupp250_ktmin100.root'
-options.maxEvents = 5000
+options.maxEvents = 50000
 
 options.register('processType',
                  "NSD",
@@ -170,9 +170,9 @@ for path in process.paths:
 
 def customise(process):
         process.load('GeneratorInterface.RivetInterface.rivetAnalyzer_cfi')
-        process.rivetAnalyzer.AnalysisNames = cms.vstring('CMS_pp_5p02TeV') 	
+        process.rivetAnalyzer.AnalysisNames = cms.vstring('CMS_TEST_ANALYSIS') 	
 	process.rivetAnalyzer.CrossSection = cms.double(options.sigma)		
-	process.rivetAnalyzer.OutputFile = cms.string('CMS_pp_5p02TeV_out.aida')
+	process.rivetAnalyzer.OutputFile = cms.string('CMS_TEST_ANALYSIS_out_test.aida')
         process.generation_step+=process.rivetAnalyzer
         process.schedule.remove(process.RAWSIMoutput_step)
         return(process)

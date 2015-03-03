@@ -18,6 +18,7 @@ namespace Rivet {
     // @name Constructors, init, analyze, finalize
     // @{
 
+    
     // Constructor
     CMS_pp_5p02TeV()
       : Analysis("CMS_pp_5p02TeV") {
@@ -33,7 +34,9 @@ namespace Rivet {
 
       // Initialize the projectors:
       addProjection(FastJets(fs, FastJets::ANTIKT, 0.3),"Jets");
-  
+
+      //_hist_sigma = bookHistogram1D("test",50,0.,500.);
+
       // Book histograms:
       _hist_sigma.addHistogram(20.0, 550.0, bookHistogram1D(1, 1, 1));
       //_hist_sigma.addHistogram(0.5, 1.0, bookHistogram1D(2, 1, 1));
@@ -77,8 +80,9 @@ namespace Rivet {
       for(unsigned int a = 0;a<jets.size();a++){
 
 	float jetpT= jets[a].momentum().pT()/GeV;
+	int bin = (int)jetpT/10;
 
-	_hist_sigma.fill(a,jetpT,weight);
+	_hist_sigma.fill(bin,jetpT,weight);
 
       }
       
