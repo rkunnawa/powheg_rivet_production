@@ -101,10 +101,10 @@ namespace Rivet {
       // fastjet::PseudoJet pruned1 = _pruner(j1);
 
       // ... and fill the histograms
-      for(unsigned int a = 0;a<psjetsAK3.size();a++)
+      for(unsigned int a = 0;a<psjetsAK3.size();++a)
 	_h_spectra_ak3->fill(psjetsAK3[a].pt(),weight);
       
-      for(unsigned int a = 0;a<psjetsAK5.size();a++)
+      for(unsigned int a = 0;a<psjetsAK5.size();++a)
 	_h_spectra_ak5->fill(psjetsAK5[a].pt(),weight);
       
       //_h_ungroomedAvgJetMass_dj[njetBin]->fill(, weight);
@@ -116,9 +116,9 @@ namespace Rivet {
     
     /// Normalise histograms etc., after the run
     void finalize() {
-      const double normalizationVal = 4;
-      normalize(_h_spectra_ak3, normalizationVal);
-      normalize(_h_spectra_ak5, normalizationVal);
+      const double normalizationVal = 1.0/(4*sumOfWeights()); // 4 - delta eta from -2 to +2 
+      scale(_h_spectra_ak3, normalizationVal);
+      scale(_h_spectra_ak5, normalizationVal);
       //for (size_t i = 0; i < N_PT_BINS_dj; ++i) {
       //  normalize(_h_ungroomedAvgJetMass_dj[i], normalizationVal);
       //  normalize(_h_filteredAvgJetMass_dj[i], normalizationVal);

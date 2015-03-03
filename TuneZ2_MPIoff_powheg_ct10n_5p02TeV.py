@@ -30,10 +30,11 @@ options.register('sqrtS',
                  "Center-of-mass energy")
 
 options.register('sigma',
-                 2662.9437,
+                 10.6518,
+#                 2662.9437,
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.float,
-                 "Cross section value from powheg in Nano Barns")
+                 "Cross section value from powheg in pico Barns")
 
 options.register('ptHatLow',
                  1,
