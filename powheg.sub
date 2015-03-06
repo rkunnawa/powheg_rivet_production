@@ -1,0 +1,37 @@
+#!/bin/bash
+
+pwd=`pwd`
+
+cd /afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/CMSSW_5_3_20/src/
+eval `scramv1 runtime -sh`
+
+source /afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/CMSSW_5_3_20/src/Appeltel/GenJetCrossCheckAnalyzer/test/POWHEG_BOX/setup.sh
+
+#source /afs/cern.ch/sw/lcg/external/MCGenerators/powheg-box/r2092/x86_64-slc6-gcc46-opt/bin/setup.sh
+
+#cd /afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/CMSSW_5_3_20/src/Appeltel/GenJetCrossCheckAnalyzer/test/POWHEG_BOX/POWHEG-BOX/Dijet/testrun-lhc/test/manyjobs/
+
+cd $pwd
+
+echo $pwd
+name=$LS_JOBNAME
+seed=$LS_SEED
+
+ls -rtl
+
+cp -rp /afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/CMSSW_5_3_20/src/Appeltel/GenJetCrossCheckAnalyzer/test/POWHEG_BOX/POWHEG-BOX/Dijet/testrun-lhc/test/BornSuppCut/powheg.input .
+
+TheSeed=${seed}
+Templatefile=powheg.input
+Targetfile=powheg-new.input
+sed s/MYSEED/${TheSeed}/ ${Templatefile} > ${Targetfile}
+cp powheg-new.input powheg.input
+
+/afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/CMSSW_5_3_20/src/Appeltel/GenJetCrossCheckAnalyzer/test/POWHEG_BOX/POWHEG-BOX/Dijet/pwhg_main > ${name}.out
+#/afs/cern.ch/sw/lcg/external/MCGenerators/powheg-box/r2092/x86_64-slc6-gcc46-opt/bin/Dijet > ${name}.out
+
+cp ${name}.out /afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/Powheg_cross_check/POWHEG_supp50_7TeV/
+mv *.lhe ${name}.lhe
+sed '$d' < ${name}.lhe > temp_${name}.lhe
+mv temp_${name}.lhe ${name}.lhe
+cp ${name}.lhe /afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/Powheg_cross_check/POWHEG_supp50_7TeV/
