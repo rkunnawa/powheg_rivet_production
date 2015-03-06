@@ -5,7 +5,7 @@ pwd=`pwd`
 cd /afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/CMSSW_5_3_20/src/
 eval `scramv1 runtime -sh`
 
-source /afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/CMSSW_5_3_20/src/Appeltel/GenJetCrossCheckAnalyzer/test/POWHEG_BOX/setup.sh
+source setup.sh
 
 #source /afs/cern.ch/sw/lcg/external/MCGenerators/powheg-box/r2092/x86_64-slc6-gcc46-opt/bin/setup.sh
 
