@@ -4,21 +4,23 @@
 #include "Rivet/Tools/Logging.hh"
 #include "Rivet/Projections/FinalState.hh"
 #include "Rivet/Projections/FastJets.hh"
-#include "Rivet/Projections/WFinder.hh"
-#include "Rivet/Projections/ZFinder.hh"
-#include "Rivet/Particle.hh"
-#include "Rivet/Tools/ParticleIdUtils.hh"
-#include "fastjet/tools/Filter.hh"
-#include "fastjet/tools/Pruner.hh"
+#include "Rivet/Tools/BinnedHistogram.hh"
 
 namespace Rivet {
 
 
   class CMS_TEST_ANALYSIS : public Analysis {
+
+  private:
+    BinnedHistogram<double> _hist_sigma_AK3;
+    BinnedHistogram<double> _hist_sigma_AK5;
+    BinnedHistogram<double> _hist_sigma_AK7;
+
   public:
 
     /// @name Constructors etc.
     //@{
+
 
     /// Constructor
     CMS_TEST_ANALYSIS()
@@ -42,24 +44,32 @@ namespace Rivet {
 
     /// Book histograms and initialise projections before the run
     void init() {
-      FinalState fs(-2.0, 2.0, 0*GeV);
-      addProjection(fs, "FS");
+      const FinalState fs;
+      //      addProjection(fs, "FS");
 
       // Jet collections
       addProjection(FastJets(fs, FastJets::ANTIKT, 0.3), "JetsAK3");
       addProjection(FastJets(fs, FastJets::ANTIKT, 0.5), "JetsAK5");
-      //addProjection(FastJets(fs, FastJets::CAM, 0.8), "JetsCA8");
-      //addProjection(FastJets(fs, FastJets::CAM, 1.2), "JetsCA12");
+      addProjection(FastJets(fs, FastJets::ANTIKT, 0.7), "JetsAK7");
 
-      // Histograms
-      //for (size_t i = 0; i < N_PT_BINS_dj; ++i ) {
-      _h_spectra_ak3 = bookHistogram1D(1, 1, 1);
-      _h_spectra_ak5 = bookHistogram1D(2, 1, 1);
-      //_h_ungroomedAvgJetMass_dj[i] = bookHistogram1D(i+1+0*N_PT_BINS_dj, 1, 1);
-      //_h_filteredAvgJetMass_dj[i] = bookHistogram1D(i+1+1*N_PT_BINS_dj, 1, 1);
-      //_h_trimmedAvgJetMass_dj[i] = bookHistogram1D(i+1+2*N_PT_BINS_dj, 1, 1);
-      //_h_prunedAvgJetMass_dj[i] = bookHistogram1D(i+1+3*N_PT_BINS_dj, 1, 1);
-      //}
+      //_h_spectra_ak3 = bookHistogram1D(1, 1, 1);
+      //_h_spectra_ak5 = bookHistogram1D(2, 1, 1);
+
+      _hist_sigma_AK3.addHistogram(0.0,0.5, bookHistogram1D(1,1,1));
+      _hist_sigma_AK3.addHistogram(0.5,1.0, bookHistogram1D(2,1,1));
+      _hist_sigma_AK3.addHistogram(1.0,1.5, bookHistogram1D(3,1,1));
+      _hist_sigma_AK3.addHistogram(1.5,2.0, bookHistogram1D(4,1,1));
+
+      _hist_sigma_AK5.addHistogram(0.0,0.5, bookHistogram1D(5,1,1));
+      _hist_sigma_AK5.addHistogram(0.5,1.0, bookHistogram1D(6,1,1));
+      _hist_sigma_AK5.addHistogram(1.0,1.5, bookHistogram1D(7,1,1));
+      _hist_sigma_AK5.addHistogram(1.5,2.0, bookHistogram1D(8,1,1));
+
+      _hist_sigma_AK7.addHistogram(0.0,0.5, bookHistogram1D(9,1,1));
+      _hist_sigma_AK7.addHistogram(0.5,1.0, bookHistogram1D(10,1,1));
+      _hist_sigma_AK7.addHistogram(1.0,1.5, bookHistogram1D(11,1,1));
+      _hist_sigma_AK7.addHistogram(1.5,2.0, bookHistogram1D(12,1,1));
+      
     }
 
 
@@ -78,79 +88,56 @@ namespace Rivet {
     void analyze(const Event& event) {
       const double weight = event.weight();
 
-      // Look at events with >= 2 jets
-      const PseudoJets& psjetsAK3 = applyProjection<FastJets>(event, "JetsAK3").pseudoJetsByPt( 1.0*GeV );
-      const PseudoJets& psjetsAK5 = applyProjection<FastJets>(event, "JetsAK5").pseudoJetsByPt( 1.0*GeV );
-      //if (psjetsAK7.size() < 2) vetoEvent;
+      const FastJets &fjAK3 = applyProjection<FastJets>(event,"JetsAK3");
+      const Jets& jetsAK3 = fjAK3.jets(1*GeV, 1000*GeV, -4.7, 4.7, RAPIDITY);
+      
+      const FastJets &fjAK5 = applyProjection<FastJets>(event,"JetsAK5");
+      const Jets& jetsAK5 = fjAK5.jets(1*GeV, 1000*GeV, -4.7, 4.7, RAPIDITY);
+      
+      const FastJets &fjAK7 = applyProjection<FastJets>(event,"JetsAK7");
+      const Jets& jetsAK7 = fjAK7.jets(1*GeV, 1000*GeV, -4.7, 4.7, RAPIDITY);
 
-      // Get the leading two jets and find their average pT
-      //const fastjet::PseudoJet& j0 = psjetsAK7[0];
-      //const fastjet::PseudoJet& j1 = psjetsAK7[1];
-      //double ptAvg = 0.5 * (j0.pt() + j1.pt());
-
-      // Find the appropriate mean pT bin and escape if needed
-      //const size_t njetBin = findPtBin(ptAvg/GeV);
-      //      if (njetBin >= N_PT_BINS_dj) vetoEvent;
-
-      // Now run the substructure algs...
-      // fastjet::PseudoJet filtered0 = _filter(j0);
-      // fastjet::PseudoJet filtered1 = _filter(j1);
-      // fastjet::PseudoJet trimmed0 = _trimmer(j0);
-      // fastjet::PseudoJet trimmed1 = _trimmer(j1);
-      // fastjet::PseudoJet pruned0 = _pruner(j0);
-      // fastjet::PseudoJet pruned1 = _pruner(j1);
-
+      
+      //const PseudoJets& psjetsAK3 = applyProjection<FastJets>(event, "JetsAK3").pseudoJetsByPt( 1.0*GeV );
+      //const PseudoJets& psjetsAK5 = applyProjection<FastJets>(event, "JetsAK5").pseudoJetsByPt( 1.0*GeV );
       // ... and fill the histograms
-      for(unsigned int a = 0;a<psjetsAK3.size();++a)
-	_h_spectra_ak3->fill(psjetsAK3[a].pt(),weight);
+      // for(unsigned int a = 0;a<psjetsAK3.size();++a){
+      // 	if (abs(psjetsAK3[a].eta()) <= 2)
+      // 	  _h_spectra_ak3->fill(psjetsAK3[a].pt(),weight);
+      // }
       
-      for(unsigned int a = 0;a<psjetsAK5.size();++a)
-	_h_spectra_ak5->fill(psjetsAK5[a].pt(),weight);
+      // for(unsigned int a = 0;a<psjetsAK5.size();++a){
+      // 	if (abs(psjetsAK5[a].eta()) <= 2)
+      // 	  _h_spectra_ak5->fill(psjetsAK5[a].pt(),weight);
+      // }
       
-      //_h_ungroomedAvgJetMass_dj[njetBin]->fill(, weight);
-      //_h_filteredAvgJetMass_dj[njetBin]->fill(0.5*(filtered0.m() + filtered1.m())/GeV, weight);
-      //_h_trimmedAvgJetMass_dj[njetBin]->fill(0.5*(trimmed0.m() + trimmed1.m())/GeV, weight);
-      //_h_prunedAvgJetMass_dj[njetBin]->fill(0.5*(pruned0.m() + pruned1.m())/GeV, weight);
+      foreach(const Jet &j, jetsAK3){
+	_hist_sigma_AK3.fill(fabs(j.momentum().rapidity()), j.momentum().pT(), weight);
+      }
+
+      foreach(const Jet &j, jetsAK5){
+       	_hist_sigma_AK5.fill(fabs(j.momentum().rapidity()), j.momentum().pT(), weight);
+      }
+
+      foreach(const Jet &j, jetsAK7){
+      	_hist_sigma_AK7.fill(fabs(j.momentum().rapidity()), j.momentum().pT(), weight);
+      }
+
+
     }
     
     
     /// Normalise histograms etc., after the run
     void finalize() {
-      const double normalizationVal = 1.0/(4*sumOfWeights()); // 4 - delta eta from -2 to +2 
-      scale(_h_spectra_ak3, normalizationVal);
-      scale(_h_spectra_ak5, normalizationVal);
-      //for (size_t i = 0; i < N_PT_BINS_dj; ++i) {
-      //  normalize(_h_ungroomedAvgJetMass_dj[i], normalizationVal);
-      //  normalize(_h_filteredAvgJetMass_dj[i], normalizationVal);
-      //  normalize(_h_trimmedAvgJetMass_dj[i], normalizationVal);
-      //  normalize(_h_prunedAvgJetMass_dj[i], normalizationVal);
-      //}
+      //const double normalizationVal = crossSection()/sumOfWeights()/2; // the 2 is for absolute eta from -2 to +2
+      // normalize(_h_spectra_ak3, normalizationVal);
+      // normalize(_h_spectra_ak5, normalizationVal);
+
+      _hist_sigma_AK3.scale(crossSection()/sumOfWeights()/2, this);
+      _hist_sigma_AK5.scale(crossSection()/sumOfWeights()/2, this);
+      _hist_sigma_AK7.scale(crossSection()/sumOfWeights()/2, this);
+      
     }
-    
-    //@}
-    
-    
-  private:
-    
-    /// @name FastJet grooming tools (configured in constructor init list)
-    //@{
-    //const fastjet::Filter _filter;
-    //const fastjet::Filter _trimmer;
-    //const fastjet::Pruner _pruner;
-    //@}
-    
-    
-    /// @name Histograms
-    //@{
-    //enum { PT_220_300_dj=0, PT_300_450_dj, PT_450_500_dj, PT_500_600_dj,
-    //PT_600_800_dj, PT_800_1000_dj, PT_1000_1500_dj, N_PT_BINS_dj } BINS_dj;
-    AIDA::IHistogram1D * _h_spectra_ak3, *_h_spectra_ak5;
-    //AIDA::IHistogram1D *_h_ungroomedJet0pt, *_h_ungroomedJet1pt;
-    //AIDA::IHistogram1D* _h_ungroomedAvgJetMass_dj[N_PT_BINS_dj];
-    //AIDA::IHistogram1D* _h_filteredAvgJetMass_dj[N_PT_BINS_dj];
-    //AIDA::IHistogram1D* _h_trimmedAvgJetMass_dj[N_PT_BINS_dj];
-    //AIDA::IHistogram1D* _h_prunedAvgJetMass_dj[N_PT_BINS_dj];
-    //@}
     
     
   };
