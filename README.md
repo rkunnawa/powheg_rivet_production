@@ -62,4 +62,4 @@ RIVET:
       If you have a .plot file inside GeneratorInterface/RivetInterface/data/ then you can run $ rivet-mkhtml out.aida and that       will create plots for you as well. 
   
   This is all I have at the moment, I will add more comments in the coming days. 
-  
+  I was able to set this up through the use of several twikis and emails to the RIVET people asking questions so here are some of the links which helped me: https://twiki.cern.ch/twiki/bin/view/Sandbox/NonPerturbativeCorrectionsForInclusiveJetsUsingPowheg, email with rivet people about cross sections: https://hypernews.cern.ch/HyperNews/CMS/get/rivet/30.html 
