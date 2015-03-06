@@ -1,6 +1,7 @@
 # POWHEG + RIVET generator production
 
 This is a setup to generate lhe files using powheg (for what ever PDF and events you want, dijet or Z+Jet ... ) and to run them to through the RIVET analyzer to get the jet invariant cross section spectra. 
+I was running this in CMSSW_5_3_20 in slc6. 
 
 GENERATING POWHEG: 
   You need a working setup of POWHEG box installed (or you can source the CMSSW version which is located here: /afs/cern.ch/sw/lcg/external/MCGenerators/powheg-box/r2092/x86_64-slc6-gcc46-opt/bin/) 
