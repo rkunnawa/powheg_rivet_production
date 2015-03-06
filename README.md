@@ -35,9 +35,7 @@ RIVET:
   1) Install Rivet: https://twiki.cern.ch/twiki/bin/viewauth/CMS/Rivet 
 
   2) Get this repository which contains the necessary files and analyzer to look at the object you are interested in. 
-
       Also take a look at the https://rivet.hepforge.org/analyses to see if any analysis does exactly what you want to do, in         that case you can download that analysis.  
-
       I used a modified version of the CMSSW_TEST_ANALYSIS.cc analyzer for my purposes, which was to generate inclusive jet           spectra 
   
   3) once you create/modify the analyzer, then compile $ scram b -j20
