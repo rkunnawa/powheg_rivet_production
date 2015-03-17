@@ -13,25 +13,26 @@ ivars = VarParsing.VarParsing('python')
 ivars.maxEvents = -1
 
 ivars.register('inputLHEfile',
-               'file:/afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/RivetCheck/CMSSW_5_3_20/src/POWHEG_supp250_5p02TeV/powheg_Job_55.lhe',
+               'file:/afs/cern.ch/work/r/rkunnawa/WORK/RAA/pp_genjets_pythia_NPC/RivetCheck/CMSSW_5_3_20/src/POWHEG_supp60_2p76TeV/powheg_Job_55.lhe',
                 VarParsing.VarParsing.multiplicity.singleton,
                 VarParsing.VarParsing.varType.string,
                "Input LHE file")
 
 ivars.register('output',
-               'TuneZ2_POWHEG_CT10NLO_5p02TeV_suppfactr250_ktmin5.aida',
+               'TuneZ2_POWHEG_CT10NLO_2p76TeV_suppfactr250_ktmin5.aida',
                 VarParsing.VarParsing.multiplicity.singleton,
                 VarParsing.VarParsing.varType.string,
                "analysis output file")
 
 ivars.register('sqrtS',
-               5020.0,
+               2760.0,
                VarParsing.VarParsing.multiplicity.singleton,
                VarParsing.VarParsing.varType.float,
                "Center-of-mass energy")
 
 ivars.register('sigma',
-               1.108e+10,
+               #1.108e+10,
+               1.226e+10,
                VarParsing.VarParsing.multiplicity.singleton,
                VarParsing.VarParsing.varType.float,
                "Cross section value from powheg in pico Barns")

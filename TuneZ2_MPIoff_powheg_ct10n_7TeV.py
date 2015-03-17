@@ -19,7 +19,7 @@ options.register('sqrtS',
                  VarParsing.VarParsing.varType.float,
                  "Center-of-mass energy")
 options.register('sigma',
-                 20130000000,
+                 3.526e+10,
                  #2662.9437,
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.float,
@@ -125,15 +125,16 @@ SelectEvents = cms.untracked.PSet(
 )
 # Additional output definition
 # Other statements
-process.GlobalTag.globaltag = 'STARTHI53_V27::All'
+process.genstepfilter.triggerConditions=cms.vstring("generation_step")
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:mc', '')
 process.MessageLogger.cerr.FwkReport.reportEvery = 50000
+
 process.generator = cms.EDFilter("Pythia6HadronizerFilter",
-                                 pythiaPylistVerbosity = cms.untracked.int32(1),
-                                 filterEfficiency = cms.untracked.double(1.0),
-                                 pythiaHepMCVerbosity = cms.untracked.bool(False),
-                                 comEnergy = cms.double(options.sqrtS),
-                                 #crossSection = cms.untracked.double(2980000000.0),
+                                 pythiaHepMCVerbosity = cms.untracked.bool(True),
                                  maxEventsToPrint = cms.untracked.int32(0),
+                                 pythiaPylistVerbosity = cms.untracked.int32(1),
+                                 comEnergy = cms.double(7000.0),
                                  PythiaParameters = cms.PSet(
                                      pythiaUESettings = cms.vstring('MSTU(21)=1 ! Check on possible errors during program execution',
                                                                     'MSTJ(22)=2 ! Decay those unstable particles',
@@ -154,11 +155,11 @@ process.generator = cms.EDFilter("Pythia6HadronizerFilter",
                                                                     'PARP(62)=1.025 ! ISR cutoff',
                                                                     'MSTP(91)=1 ! Gaussian primordial kT',
                                                                     'PARP(93)=10.0 ! primordial kT-max',
-                                                                    'MSTP(81)=20 ! multiple parton interactions 1 is Pythia default',
-                                                                    'MSTP(82)=4 ! Defines the multi-parton model',
-                                                                    'MSTP(86)=1'	
-                                                                ), #to set the mpi cut smaller than the pt of the hardest jet!
-                                     processParameters = cms.vstring('MSEL=0 ! user defined process',),
+                                                                    'MSTP(81)=21 ! multiple parton interactions 1 is Pythia default',
+                                                                    'MSTP(82)=4 ! Defines the multi-parton model'),
+                                     processParameters = cms.vstring('MSEL=0 ! User defined processes',
+                                                                     'PMAS(5,1)=4.4 ! b quark mass',
+                                                                     'PMAS(6,1)=172.4 ! t quark mass'),
                                      parameterSets = cms.vstring('pythiaUESettings',
                                                                  'processParameters')
                                  )
@@ -181,7 +182,7 @@ for path in process.paths:
         process.load('GeneratorInterface.RivetInterface.rivetAnalyzer_cfi')
         process.rivetAnalyzer.AnalysisNames = cms.vstring('CMS_TEST_ANALYSIS')
         process.rivetAnalyzer.CrossSection = cms.double(options.sigma)
-        process.rivetAnalyzer.OutputFile = cms.string('CMS_TEST_ANALYSIS_out_CT10_7TeV_ktmin5_supp250.aida')
+        process.rivetAnalyzer.OutputFile = cms.string('CMS_TEST_ANALYSIS_out_CT10_7TeV_ktmin5_supp250_test3.aida')
         process.generation_step+=process.rivetAnalyzer
         process.schedule.remove(process.RAWSIMoutput_step)
         return(process)
